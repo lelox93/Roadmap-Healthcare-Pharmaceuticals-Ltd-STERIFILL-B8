@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roadmap di sviluppo Healthcare Pharmaceuticals Ltd</title>
+
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+  <script type="text/javascript">
+    google.charts.load('current', { packages: ['gantt'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    function daysToMilliseconds(days) {
+      return days * 24 * 60 * 60 * 1000;
+    }
+
+    function drawChart() {
+      var data = new google.visualization.DataTable();
+
+      data.addColumn('string', 'Task ID');
+      data.addColumn('string', 'Task Name');
+      data.addColumn('date', 'Start Date');
+      data.addColumn('date', 'End Date');
+      data.addColumn('number', 'Duration');
+      data.addColumn('number', 'Percent Complete');
+      data.addColumn('string', 'Dependencies');
+
+      data.addRows([
+        ['W22_ConfigFile_Secomea', 'Controllo file configurazione macchina + SECOMEA', new Date(2026, 4, 25), new Date(2026, 4, 27), null, 0, null],
+        ['W22_IO_Config', 'Configurazione indirizzi I/O da schema elettrico', new Date(2026, 4, 28), new Date(2026, 4, 29), null, 0, 'W22_ConfigFile_Secomea'],
+        ['W22_CipSip_Procedure', 'Implementazione procedura simil CIP-SIP', new Date(2026, 4, 25), new Date(2026, 4, 29), null, 0, null],
+
+        ['W23_MachinePowerOn', 'Accensione macchina', new Date(2026, 5, 3), new Date(2026, 5, 3), daysToMilliseconds(1), 0, 'W22_IO_Config,W22_CipSip_Procedure'],
+        ['W23_Panels', 'Sistemazione pannelli', new Date(2026, 5, 3), new Date(2026, 5, 5), null, 0, 'W23_MachinePowerOn'],
+        ['W23_HW_Final_Config', 'Configurazione hardware finale', new Date(2026, 5, 3), new Date(2026, 5, 5), null, 0, 'W23_MachinePowerOn'],
+
+        ['W24_AxesAndZeros', 'Movimentazione assi e ricerca zeri', new Date(2026, 5, 8), new Date(2026, 5, 10), null, 0, 'W23_HW_Final_Config'],
+        ['W24_FlamesAndWelding', 'Verifica fiamme e saldatura', new Date(2026, 5, 10), new Date(2026, 5, 11), null, 0, 'W24_AxesAndZeros'],
+        ['W24_TankTare', 'Settaggio tara serbatoio prodotto', new Date(2026, 5, 11), new Date(2026, 5, 12), null, 0, 'W24_AxesAndZeros'],
+
+        ['W25_StepProduction_ShiftRegister', 'Prima prova produzione a passo + shift register', new Date(2026, 5, 15), new Date(2026, 5, 17), null, 0, 'W24_AxesAndZeros,W24_FlamesAndWelding,W24_TankTare'],
+        ['W25_CipSip_Code', 'Inserimento codice gestione simil CIP-SIP', new Date(2026, 5, 15), new Date(2026, 5, 20), null, 0, 'W22_CipSip_Procedure'],
+        ['W25_Siemens_AugerCam', 'Intervento Siemens: verifica cammismo coclea entrata', new Date(2026, 5, 17), new Date(2026, 5, 18), null, 0, 'W25_StepProduction_ShiftRegister'],
+
+        ['W26_WeighingTests', 'Prove di pesatura', new Date(2026, 5, 22), new Date(2026, 5, 24), null, 0, 'W25_StepProduction_ShiftRegister,W25_Siemens_AugerCam'],
+        ['W26_Recipes', 'Ricette', new Date(2026, 5, 24), new Date(2026, 5, 26), null, 0, 'W26_WeighingTests'],
+
+        ['W27_CTSP_SCADA', 'CTSP - Integrazione SCADA', new Date(2026, 5, 29), new Date(2026, 5, 29), daysToMilliseconds(1), 0, 'W26_Recipes'],
+        ['W29_VIT', 'VIT', new Date(2026, 6, 13), new Date(2026, 6, 17), null, 0, 'W27_CTSP_SCADA'],
+        ['W30_FAT', 'Obiettivo FAT', new Date(2026, 6, 20), new Date(2026, 6, 20), daysToMilliseconds(1), 0, 'W29_VIT']
+      ]);
+
+      var options = {
+        height: 820,
+        backgroundColor: '#ffffff',
+        gantt: {
+          trackHeight: 34,
+          labelStyle: {
+            fontName: 'Segoe UI',
+            fontSize: 13,
+            color: '#000000'
+          },
+          criticalPathEnabled: false,
+          innerGridTrack: { fill: '#ffffff' },
+          innerGridDarkTrack: { fill: '#f2f2f2' },
+          arrow: {
+            angle: 100,
+            width: 2,
+            color: '#444444',
+            radius: 0
+          },
+          palette: [
+            { color: '#1565c0', dark: '#0d47a1', light: '#bbdefb' },
+            { color: '#1976d2', dark: '#0d47a1', light: '#bbdefb' },
+            { color: '#2e7d32', dark: '#1b5e20', light: '#c8e6c9' },
+            { color: '#ef6c00', dark: '#e65100', light: '#ffe0b2' },
+            { color: '#6a1b9a', dark: '#4a148c', light: '#e1bee7' },
+            { color: '#00838f', dark: '#006064', light: '#b2ebf2' },
+            { color: '#c62828', dark: '#b71c1c', light: '#ffcdd2' },
+            { color: '#424242', dark: '#212121', light: '#e0e0e0' }
+          ]
+        }
+      };
+
+      var chart = new google.visualization.Gantt(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    }
+
+    window.addEventListener('resize', function () {
+      if (window.google && google.visualization) drawChart();
+    });
+  </script>
+
+  <style>
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 30px;
+      background-color: #ffffff;
+      color: #000000;
+    }
+
+    .page {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 30px;
+      margin-bottom: 6px;
+      color: #000000;
+      font-weight: 700;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #000000;
+      margin-bottom: 22px;
+    }
+
+    .note {
+      font-size: 13px;
+      color: #333333;
+      margin-bottom: 18px;
+      padding: 12px 14px;
+      border-left: 4px solid #1565c0;
+      background: #f7f9fc;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px 18px;
+      margin-bottom: 24px;
+      font-size: 14px;
+      color: #000000;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      white-space: nowrap;
+    }
+
+    .legend-color {
+      width: 18px;
+      height: 18px;
+      border-radius: 4px;
+      display: inline-block;
+      border: 1px solid rgba(0, 0, 0, 0.15);
+    }
+
+    .chart-wrapper {
+      overflow-x: auto;
+      border: 1px solid #dddddd;
+      border-radius: 10px;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    #chart_div {
+      width: 100%;
+      min-width: 1250px;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 12px;
+      color: #333333;
+    }
+
+    @media print {
+      body { margin: 10mm; }
+      .chart-wrapper { overflow: visible; border: none; padding: 0; }
+      #chart_div { min-width: 1200px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+    <h1>Roadmap di sviluppo Healthcare Pharmaceuticals Ltd</h1>
+
+    <div class="subtitle">
+      Pianificazione attività dal 25 maggio al 20 luglio 2026
+    </div>
+
+    <div class="note">
+      Nota calendario: nella week 23 sono stati esclusi il 1 giugno come ponte e il 2 giugno come festività.
+      Le attività riprendono dal 3 giugno con l'accensione macchina.
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><span class="legend-color" style="background:#1565c0;"></span>Preparazione e configurazione</div>
+      <div class="legend-item"><span class="legend-color" style="background:#2e7d32;"></span>Software / simil CIP-SIP</div>
+      <div class="legend-item"><span class="legend-color" style="background:#ef6c00;"></span>Commissioning macchina</div>
+      <div class="legend-item"><span class="legend-color" style="background:#6a1b9a;"></span>Motion / assi / camme</div>
+      <div class="legend-item"><span class="legend-color" style="background:#00838f;"></span>Processo / pesatura / ricette</div>
+      <div class="legend-item"><span class="legend-color" style="background:#c62828;"></span>Milestone / VIT / FAT</div>
+    </div>
+
+    <div class="chart-wrapper">
+      <div id="chart_div"></div>
+    </div>
+
+    <div class="footer">
+      Roadmap generata come pagina HTML statica con Google Charts Gantt.
+    </div>
+  </div>
+</body>
+</html>
